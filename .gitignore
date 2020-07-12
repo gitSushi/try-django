@@ -100,3 +100,6 @@ venv.bak/
 # vscode
 .vscode/
 settings.json
+
+# notes
+try_django-step_by_step.txt
