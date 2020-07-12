@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if title %}
+  <h1>{{ title }}</h1>
+  {% endif %}
+
+{% comment %}
+In action the dot refers to same view it came from.
+Here : contact_page
+{% endcomment %}
+  <form method="POST" action="."> {% csrf_token %}
+    {% comment %} <input type="text" name="full_name" />
+    <input type="email" name="email" />
+    <textarea name="content"></textarea> {% endcomment %}
+    {{ form.as_p }}
+    <input type="submit" value="send" />
+  </form>
+
+{% endblock %}

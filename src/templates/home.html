@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1>{{ title }}</h1>
+
+  <!-- django context_processors -->
+  {% comment %}
+    {{ request.user }}
+    {{ request.path }}
+    {{ user }}
+    {{ user.is_authenticated }}
+  {% endcomment %}
+
+  {% if user.is_authenticated %}
+
+    {% for item in my_list %}
+      {% comment %} <li>{{ item }}</li> {% endcomment %}
+      {% include "blog/list_inline.html" with blog_post=item truncate=True detail=False %}
+    {% endfor %}
+
+  {% else %}
+    <p>Global Data</p>
+  {% endif %}
+
+{% endblock %}
