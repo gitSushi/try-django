@@ -2,11 +2,13 @@ from django.shortcuts import render , get_object_or_404, redirect
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-# from django.utils import timezone
+from django.utils import timezone
 
 # Create your views here.
 from .models import BlogPost
 from .forms import BlogPostForm, BlogPostModelForm
+from comments.forms import CommentPostModelForm
+from comments.models import CommentPost
 
 '''
 CRUD
@@ -35,12 +37,13 @@ def blog_post_list_view(request):
     my_qs = BlogPost.objects.filter(user=request.user)
     # avoids duplicates
     qs = (qs | my_qs).distinct()
+
   # could be a search field
   '''
   qs = BlogPost.objects.filter(title__icontains='title')
   '''
   template_name = 'blog/list.html'
-  context = {"object_list": qs}
+  context = {"title": "Your Try Django Blog","object_list": qs}
   return render(request, template_name, context)
 
 # (login_url="/login") as argument or change in settings
@@ -67,15 +70,33 @@ def blog_post_create_view(request):
     obj.user = request.user
     obj.save()
     form = BlogPostModelForm()
+    return redirect("/blog")
   template_name = 'blog/form.html'
-  context = {"form": form}
+  context = {"title": "New Post", "form": form}
   return render(request, template_name, context)
 
+@staff_member_required
 def blog_post_detail_view(request, slug):
   # 1 object -> detail view
   obj = get_object_or_404(BlogPost, slug=slug)
+  now = timezone.now()
+  # comments = obj.commentpost_set.all()
+  comments = obj.commentpost_set.order_by('-timestamp')
+  # print(obj.id)
+
+  form = CommentPostModelForm(request.POST or None)
+  if form.is_valid():
+    formObj = form.save(commit=False)
+    formObj.user = request.user
+    # print(request)
+    # formObj.commentId = obj.id
+    formObj.commentId = obj
+    formObj.save()
+    form = CommentPostModelForm()
+
   template_name = 'blog/detail.html'
-  context = {"object": obj}
+  context = {"object": obj, "comments": comments, "form": form}
+  #print(context["comments"][0].content)
   return render(request, template_name, context)
 
 @staff_member_required

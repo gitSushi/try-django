@@ -49,6 +49,10 @@ jo
 lossushi37@gmail.com
 7ry-dj4ng0
 
+• other users :
+famous-author
+74mousWritter
+
 
 • python manage.py migrate
 

@@ -7,10 +7,11 @@ from django.db.models import Q
 
 User = settings.AUTH_USER_MODEL
 
+
 class BlogPostQuerySet(models.QuerySet):
     def published(self):
-      now = timezone.now()
-      return self.filter(publish_date__lte=now)
+        now = timezone.now()
+        return self.filter(publish_date__lte=now)
 
     def search(self, query):
         ''' 
@@ -28,8 +29,9 @@ class BlogPostQuerySet(models.QuerySet):
             Q(user__last_name__icontains=query) |
             Q(user__email__icontains=query) |
             Q(user__username__icontains=query)
-            )
+        )
         return self.filter(lookup)
+
 
 class BlogPostManager(models.Manager):
     '''
@@ -37,6 +39,7 @@ class BlogPostManager(models.Manager):
       now = timezone.now()
       return self.get_queryset().filter(publish_date__lte=now)
     '''
+
     def get_queryset(self):
         return BlogPostQuerySet(self.model, using=self._db)
 
@@ -48,35 +51,38 @@ class BlogPostManager(models.Manager):
             return self.get_queryset().none()
         return self.get_queryset().published().search(query)
 
+
 class BlogPost(models.Model):
-  # id = models.IntegerField() # primary key (pk)
-  '''
-  # if user is deleted all user's model related is set to null
-  # set to default would :
-  # in case of another user deleted their posts would end up being superuser's
-  '''
-  user = models.ForeignKey(User, default=1, null=True, on_delete=models.SET_NULL)
-  title = models.CharField(max_length=120)
-  content = models.TextField(null=True, blank=True)
-  # slug is a url encoded value
-  slug = models.SlugField(unique=True)
-  publish_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
-  timestamp = models.DateTimeField(auto_now_add=True)
-  updated = models.DateTimeField(auto_now=True)
-  
-  #   image = models.FileField(upload_to='image/', blank=True, null=True)
-  image = models.ImageField(upload_to='image/', blank=True, null=True)
+    # id = models.IntegerField() # primary key (pk)
+    '''
+    # if user is deleted all user's model related is set to null
+    # set to default would :
+    # in case of another user deleted their posts would end up being superuser's
+    '''
+    user = models.ForeignKey(User, default=1, null=True,
+                             on_delete=models.SET_NULL)
+    title = models.CharField(max_length=120)
+    content = models.TextField(null=True, blank=True)
+    # slug is a url encoded value
+    slug = models.SlugField(unique=True)
+    publish_date = models.DateTimeField(
+        auto_now=False, auto_now_add=False, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
-  objects = BlogPostManager()
+    #   image = models.FileField(upload_to='image/', blank=True, null=True)
+    image = models.ImageField(upload_to='image/', blank=True, null=True)
 
-  class Meta:
-      ordering = ['-publish_date', '-updated', '-timestamp']
+    objects = BlogPostManager()
 
-  def get_absolute_url(self):
-      return f"/blog/{self.slug}"
+    class Meta:
+        ordering = ['-publish_date', '-updated', '-timestamp']
 
-  def get_edit_url(self):
-      return f"{self.get_absolute_url()}/edit"
-  
-  def get_delete_url(self):
-      return f"{self.get_absolute_url()}/delete"
+    def get_absolute_url(self):
+        return f"/blog/{self.slug}"
+
+    def get_edit_url(self):
+        return f"{self.get_absolute_url()}/edit"
+
+    def get_delete_url(self):
+        return f"{self.get_absolute_url()}/delete"

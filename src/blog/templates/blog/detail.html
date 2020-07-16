@@ -9,8 +9,25 @@
   {% endcomment %}
   {% include "blog/list_inline.html" with blog_post=object detail=True %}
 
+  {% comment %} {% include "comments/comment_list.html" %} {% endcomment %}
+
   {% if request.user.is_authenticated  %}
     {% if request.user.is_staff  %}
+      <div class="col-12">
+        <form method="POST" action="." enctype="multipart/form-data"> {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="send" />
+        </form>
+      </div>
+      <div class="col-12">
+      {% if not comments %}
+        <p>Be the first to comment on {{object.title}}</p>
+      {% else %}        
+        {% for comment in comments %}
+          <p>{{comment.content}} written by {{comment.user}} at {{comment.timestamp}}</p>
+        {% endfor %}
+      {% endif %}
+      </div>
       <div class="col-12">
         <a href='{{ object.get_edit_url }}'>Edit</a>
         <a href='{{ object.get_delete_url }}'>Delete</a>

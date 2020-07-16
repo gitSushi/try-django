@@ -2,7 +2,7 @@
 {% comment %} following is the django convention {% endcomment %}
 {% comment %} <li><a href='{{ object.get_absolute_url }}'>{{ object.title }}</a></li> {% endcomment %}
 {% comment %} <li><a href='{{ blog_post.get_absolute_url }}'>{{ blog_post.title }}</a></li> {% endcomment %}
-<div class="col-12 col-md-6 mx-auto">
+<div class="col-12 col-md-4 mx-auto">
   <div class="card {% if not blog_post.publish_date %} bg-dark text-light {% endif %}">
     <div class="card-body">
       {% if blog_post.image %}

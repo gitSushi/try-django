@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="row">
+  {% comment %} <div class="row"> {% endcomment %}
   {% for object in object_list %}
     {% include "blog/list_inline.html" with blog_post=object truncate=True detail=False %}
   {% endfor %}
-  </div>
+  {% comment %} </div> {% endcomment %}
 {% endblock %}

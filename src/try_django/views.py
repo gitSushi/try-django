@@ -10,9 +10,9 @@ from blog.models import BlogPost
 def home_page(request):
   new_title = "Welcome to Try Django"
   context = {"title": "not authenticated title"}
-  qs = BlogPost.objects.all()[:5]
   if request.user.is_authenticated:
     # context = {"title": new_title, "my_list": ["one", "two", "three"]}
+    qs = BlogPost.objects.all()[:5]
     context = {"title": new_title, "my_list": qs}
   return render(request, "home.html", context)
 
